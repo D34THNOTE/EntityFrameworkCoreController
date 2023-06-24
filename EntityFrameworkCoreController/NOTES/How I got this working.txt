@@ -1,0 +1,24 @@
+﻿This is more of a self-note in case I will need this in the future:
+
+Before running the command use NuGet to install:
+- Microsoft.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.Design
+- Microsoft.EntityFrameworkCore.SqlServer
+
+Then use this command:(I am using a local Docker server, might need to replace the connection string)
+(also notice the --project with project name at the end, this will also need replacing when doing that for a different project)
+dotnet ef dbcontext scaffold "Server=(localdb)\MSSQLLocalDB;Database=master;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --table Client --table Client_Trip --table Trip --table Country --table Country_Trip --project EntityFrameworkCoreController
+
+
+Because of we have to add the "dotnet ef dbcontext", but first need the packages mentioned above
+
+(TRY OUT INSTALLING EntityFrameworkCode.Tools to not have to write "dotnet ef")
+
+Also install:
+Microsoft.AspNetCore.Mvc.NewtonsoftJson
+
+and add these lines in Program.cs:
+builder.Services.AddScoped<MasterContext>(); // important to add this line - to make MasterContext actually be used
+
+builder.Services.AddControllers().AddNewtonsoftJson(opt =>
+    opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore); // also important to resolve the cycle problem during serialization
